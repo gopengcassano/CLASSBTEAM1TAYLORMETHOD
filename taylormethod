@@ -1,0 +1,69 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+h = 0.001                     
+x_max = 100                  # Nilai maksimum x
+n = int(x_max / h)           # Jumlah langkah (karena h kecil)
+x = np.linspace(0, x_max, n + 1)  # Array x dari 0 hingga 100
+y = np.zeros(n + 1)               # Array y untuk menyimpan hasil tiap langkah
+y[0] = 1  # Nilai awal y(0) = 1
+
+
+print(" Persamaan: dy/dx = 3x^4 - 1 - y")
+print(" Metode: Taylor Orde 4")
+print(" Langkah h = 0.001")
+print(" Tujuan: Hitung y saat x = 100\n")
+
+# Definisikan fungsi dan turunannya
+
+# Fungsi f(x, y)
+def f(x, y):
+    return 3 * x**4 - 1 - y
+
+# Turunan pertama dari f(x, y)
+# f'(x, y) = d/dx [f(x, y)] = d/dx [3x^4 - 1 - y]
+#          = 12x^3 - dy/dx
+# Karena dy/dx = f(x, y), maka:
+# f'(x, y) = 12x^3 - f(x, y)
+def f1(x, y):
+    return 12 * x**3 - f(x, y)
+
+# Turunan kedua dari f(x, y)
+# f''(x, y) = d/dx [f'(x, y)] = d/dx [12x^3 - f(x, y)]
+#          = 36x^2 - f'(x, y)
+def f2(x, y):
+    return 36 * x**2 - f1(x, y)
+
+# Turunan ketiga dari f(x, y)
+# f'''(x, y) = d/dx [f''(x, y)] = d/dx [36x^2 - f'(x, y)]
+#           = 72x - f''(x, y)
+def f3(x, y):
+    return 72 * x - f2(x, y)
+
+# Iterasi Taylor Orde 4
+
+print(" Mulai iterasi Taylor Orde 4...\n")
+
+for i in range(n):
+    xi = x[i]
+    yi = y[i]
+
+    # Taylor Order 4 :
+    # y_{n+1} = y_n + h*f + h^2/2*f' + h^3/6*f'' + h^4/24*f'''
+    y[i+1] = yi + h * f(xi, yi) \
+               + (h**2 / 2) * f1(xi, yi) \
+               + (h**3 / 6) * f2(xi, yi) \
+               + (h**4 / 24) * f3(xi, yi)
+
+print(f" Hasil akhir: y(100) ≈ {y[-1]:.6f}")
+
+# Plot
+plt.figure(figsize=(10, 5))
+plt.plot(x, y, label='Solusi y(x) dengan Taylor Orde 4', color='mediumblue')
+plt.xlabel('x')
+plt.ylabel('y')
+plt.title('Solusi Numerik y(x) dari Persamaan Diferensial (Taylor Orde 4)')
+plt.grid(True)
+plt.legend()
+plt.tight_layout()
+plt.show()
